@@ -1,21 +1,15 @@
 import re
 
-ip1 = '255'
-ip2 = '033'
-ip3 = '003'
+# A entrada do caso teste será feita via input
 
-if re.match('0', ip1) == None:
+ip = input()
+
+# Validação - IP
+
+pattern_ip = r'((([0-1]?[0-9]?[0-9])|(2[0-4][0-9])|(25[0-5]))\.){3}(([0-1][0-9][0-9])|(2[0-4][0-9])|(25[0-5]))'
+
+if(re.match(pattern_ip, ip)):
     print(True)
 else:
     print(False)
 
-if re.match('0', ip2) == None:
-    print(True)
-else:
-    print(False)
-
-if re.match('0', ip3) == None:
-    print(True)
-else:
-    print(False)
-    
