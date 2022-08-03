@@ -138,18 +138,10 @@ try:
 
     # Validação - Tipo de transação
 
-    pattern_trans = [r'pull', r'push', r'stash', r'pop']
+    pattern_trans = ['pull', 'push', 'stash', 'pop']
     
-    if re.match(r'pull', elementos[4]):
-        trans_val = True
-    elif re.match(r'push', elementos[4]):
-        trans_val = True
-    elif re.match(r'stash', elementos[4]):
-        trans_val = True
-    elif re.match(r'pop', elementos[4]):
-        trans_val = True
-    else:
-        trans_val = False
+
+    
 
     # Validação - Repositório
 
