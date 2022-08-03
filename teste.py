@@ -1,45 +1,46 @@
 import re
 
-# A entrada do caso teste será feita via input
+from numpy import append
 
-ip = input()
+elementos = input()
 
-# Validação - IP
 
-pattern_ip = r'((([0-1]?[0-9]?[0-9])|(2[0-4][0-9])|(25[0-5]))\.){3}(([0-1]?[0-9]?[0-9])|(2[0-4][0-9])|(25[0-5]))'
+# Validação - Senha
+lista_senha = elementos.split('.')
 
-ip_fatiamento = ip.split('.')  # ['000', '000', '000', '000']
-print(ip_fatiamento)
+t = 1
 
-ip_status = []
+# Senha - 2 digitos por casa
+for i in lista_senha:
+    if len(i) == 2:
+        t = t*1
+    else:
+        t = t*0
+        
 
-print(f"IP Status before: {ip_status}")
 
-if(re.match(pattern_ip, ip)):
+# Senha - validar caracteres
 
-    for i in ip_fatiamento:
-        if int(i) >= 100:
-            ip_status.append(True)
+for i in lista_senha:
+    if re.findall(r'((\d\d)|([A-F]\d)|(\d[A-F]))', i):
+        t = t*1
 
-        elif 10 <= int(i) < 100:
-            if re.match('0', i) == None:
-                ip_status.append(True)
-            else:
-                ip_status.append(False)
+    else:
+        t = t*0
+
+for i in lista_senha:
+    if re.findall(r'[0-9][0-9]', i):
+        if i[0] != i[1]:
+            t = t*1
+
         else:
-            if re.match('0', i) == None:
-                ip_status.append(True)
-            else:
-                ip_status.append(False)
+            t = t*0
 
+# Senha - Validar listas
+
+if t:
+    senha_val = True
 else:
-    ip_val = False
+    senha_val = False
 
-print(f"IP Status after: {ip_status}")
-
-if False in ip_status:
-    ip_val = False
-else:
-    ip_val = True
-
-print(ip_val)
+print(senha_val)

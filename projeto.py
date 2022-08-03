@@ -1,125 +1,176 @@
 # Importando a biblioteca regex
 import re
 
-# A entrada do caso teste será feita via input
+from soupsieve import match
 
-entrada = input().strip()
+try:
+    # A entrada do caso teste será feita via input
 
-# Validação - Excesso de ''
+    entrada = input().strip()
 
-elementos = entrada.split(' ')
-while('' in elementos):
-    elementos.remove('')
+    # Validação - Excesso de ''
 
-# Validação - Quantidade de elementos
+    elementos = entrada.split(' ')
+    while('' in elementos):
+        elementos.remove('')
 
-if(len(elementos) != 7):
-    print(False)
-    exit()
+    # Validação - Quantidade de elementos
 
-# Validação - Autor
+    if(len(elementos) != 7):
+        print(False)
+        exit()
 
-autor = elementos[0]
-n_letras = re.findall('[a-zA-Z]', autor)
-n_digitos = re.findall('[0-9]', autor)
+    # Validação - Autor
 
-if(n_letras > n_digitos):
-    if(re.match('[0-9]', autor)):
-        autor_val = False
-    else:
-        autor_val = True
-else:
-    autor_val = False
+    autor = elementos[0]
+    n_letras = re.findall('[a-zA-Z]', autor)
+    n_digitos = re.findall('[0-9]', autor)
 
-# Validação - Senha
+    if(len(n_letras) >= len(n_digitos)):
 
-pattern_senha = r'((([A-F]\d)|(\d[A-F])|(\d\d)).){3}(([A-F]\d)|(\d[A-F])|(\d\d))'
-senha_val = re.match(pattern_senha, elementos[1])
-
-
-# Validação - IP
-
-pattern_ip = r'((([0-1]?[0-9]?[0-9])|(2[0-4][0-9])|(25[0-5]))\.){3}(([0-1]?[0-9]?[0-9])|(2[0-4][0-9])|(25[0-5]))'
-
-ip_fatiamento = elementos[2].split('.')  # ['000', '000', '000', '000']
-
-ip_status = []
-
-if(re.match(pattern_ip, elementos[2])):
-
-    for i in ip_fatiamento:
-        if int(i) >= 100:
-            ip_status.append(True)
-
-        elif 10 <= int(i) < 100:
-            if re.match('0', i) == None:
-                ip_status.append(True)
-            else:
-                ip_status.append(False)
-        elif 1 <= int(i) < 10:
-            if re.match('00', i) == None:
-                ip_status.append(True)
-            else:
-                ip_status.append(False)
-        elif i == '000' or i == '00':
-            ip_status.append(False)
+        if(re.match('[0-9]', autor)):
+            autor_val = False
         else:
-            ip_status.append(True)
-
-else:
-    ip_val = False
-
-if False in ip_status:
-    ip_val = False
-else:
-    ip_val = True
+            autor_val = True
+    else:
+        autor_val = False
 
 
-# Validação - E-mail
+    # Validação - Senha
 
-arrobas = 0
-pattern_email1 = r'([a-zA-Z0-9]+([\.\-\_][a-zA-Z0-9]+)*)'
-pattern_email2 = r'([\w]+\.[\w]+)(\.[\w]+)*'
+    lista_senha = elementos[1].split('.')
 
-for i in range(len(elementos[3])):
-    if elementos[3][i] == '@':
-        arrobas += 1
+    t = 1
 
-if arrobas == 1:
-    email_groups = elementos[3].split("@")
-    email_1 = re.match(pattern_email1, email_groups[0])
-    email_2 = re.match(pattern_email2, email_groups[1])
+    # Senha - 2 digitos por casa
+    for i in lista_senha:
+        if len(i) == 2:
+            t = t*1
+        else:
+            t = t*0
 
-    if email_1 and email_2:
-        email_val = True
+    # Senha - validar caracteres
+
+    for i in lista_senha:
+        if re.findall(r'((\d\d)|([A-F]\d)|(\d[A-F]))', i):
+            t = t*1
+
+        else:
+            t = t*0
+
+    for i in lista_senha:
+        if re.findall(r'[0-9][0-9]', i):
+            if i[0] != i[1]:
+                t = t*1
+
+            else:
+                t = t*0
+
+    # Senha - Validar listas
+
+    if t:
+        senha_val = True
+    else:
+        senha_val = False
+
+
+    # Validação - IP
+
+    ip_fatiamento = elementos[2].split('.')  # ['000', '000', '000', '000']
+
+    p = 1
+
+    if(len(ip_fatiamento) == 4):
+
+        for i in ip_fatiamento:
+            if int(i) >= 100:
+                p = p * 1
+
+            elif 10 <= int(i) < 100:
+                if re.match('0', i) == None:
+                    p = p * 1
+                else:
+                    p = p * 0
+
+            elif 1 <= int(i) < 10:
+                if re.match('00', i) == None:
+                    p = p * 1
+                else:
+                    p = p * 0
+
+            elif i == '000' or i == '00':
+                p = p * 0
+            else:
+                p = p * 1
+
+        if p:
+            ip_val = True
+        else:
+            ip_val = False
+
+    else:
+        ip_val = False
+    
+
+    # Validação - E-mail
+
+    arrobas = 0
+    pattern_email1 = r'([a-zA-Z0-9]+([\.\-\_][a-zA-Z0-9]+)*)'
+    pattern_email2 = r'([\w]+\.[\w]+)(\.[\w]+)*'
+
+    for i in range(len(elementos[3])):
+        if elementos[3][i] == '@':
+            arrobas += 1
+
+    if arrobas == 1:
+        email_groups = elementos[3].split("@")
+        email_1 = re.match(pattern_email1, email_groups[0])
+        email_2 = re.match(pattern_email2, email_groups[1])
+
+        if email_1 and email_2:
+            email_val = True
+        else:
+            email_val = False
     else:
         email_val = False
-else:
-    email_val = False
 
 
-# Validação - Tipo de transação
 
-pattern_trans = r'((pull)|(push)|(stash)|(fork)|(pop))'
-trans_val = re.match(pattern_trans, elementos[4])
+    # Validação - Tipo de transação
 
-# Validação - Repositório
+    pattern_trans = [r'pull', r'push', r'stash', r'pop']
+    
+    if re.match(r'pull', elementos[4]):
+        trans_val = True
+    elif re.match(r'push', elementos[4]):
+        trans_val = True
+    elif re.match(r'stash', elementos[4]):
+        trans_val = True
+    elif re.match(r'pop', elementos[4]):
+        trans_val = True
+    else:
+        trans_val = False
 
-pattern_rep = r'([\w_]+)'
-rep_val = re.match(pattern_rep, elementos[5])
+    # Validação - Repositório
 
-# Validação - Hash
+    pattern_rep = r'([\w_]+)'
+    rep_val = re.match(pattern_rep, elementos[5])
 
-pattern_hash = r'(\d|[a-f]){32}'
-hash_val = re.match(pattern_hash, elementos[6])
+    # Validação - Hash
 
-# Validando resposta final
+    pattern_hash = r'(\d|[a-f]){32}'
+    hash_val = re.match(pattern_hash, elementos[6])
 
-if (autor_val and senha_val and ip_val and email_val and trans_val and rep_val and hash_val):
-    result = True
-else:
-    result = False
+    # Validando resposta final
 
-# Exibindo resultado
+    if (autor_val and senha_val and ip_val and email_val and trans_val and rep_val and hash_val):
+        result = True
+    else:
+        result = False
 
-print(result)
+    # Exibindo resultado
+
+    print(result)
+
+except EOFError:
+    print(False)
